@@ -78,7 +78,7 @@ function animateSteps() {
     steps[i].classList.add("done");
     i++;
     steps[i].classList.add("active");
-  }, 4000);
+  }, 6000); // 7000 → 6000ms（処理時間に合わせて調整）
 }
 
 function markAllStepsDone() {
