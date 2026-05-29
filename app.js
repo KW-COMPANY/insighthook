@@ -7,14 +7,9 @@ const errorEl = document.getElementById("error");
 const reportContent = document.getElementById("reportContent");
 const copyBtn = document.getElementById("copyBtn");
 
-// 明らかにセンシティブなURLパターン（会員制・管理画面など）はクライアント側で弾く
 const BLOCKED_URL_PATTERNS = [
-  /\/admin/i,
-  /\/login/i,
-  /\/mypage/i,
-  /\/members?\//i,
-  /\/account/i,
-  /\/dashboard/i,
+  /\/admin/i, /\/login/i, /\/mypage/i, /\/members?\//i,
+  /\/account/i, /\/dashboard/i,
   /localhost|127\.0\.0\.1|192\.168\./i,
 ];
 
@@ -25,9 +20,8 @@ runBtn.addEventListener("click", async () => {
     showError("正しいURL（http:// または https://）を入力してください。");
     return;
   }
-
   if (BLOCKED_URL_PATTERNS.some((re) => re.test(url))) {
-    showError("会員専用・管理画面と思われるURLは分析対象外です。公開トップページ等を指定してください。");
+    showError("会員専用・管理画面と思われるURLは分析対象外です。");
     return;
   }
 
@@ -44,12 +38,15 @@ runBtn.addEventListener("click", async () => {
       body: JSON.stringify({ url }),
     });
 
+    const data = await res.json().catch(() => ({}));
+
     if (!res.ok) {
-      // サーバー側エラーメッセージは詳細を出さず汎用メッセージに
-      throw new Error(`分析中にエラーが発生しました（${res.status}）。URLをご確認ください。`);
+      // エラーコードとdetailを表示（原因切り分け用）
+      const code = data.code || "UNKNOWN";
+      const detail = data.detail ? `\n詳細: ${data.detail}` : "";
+      throw new Error(`分析エラー [${code}] (HTTP ${res.status})${detail}`);
     }
 
-    const data = await res.json();
     markAllStepsDone();
     showReport(data.report);
   } catch (err) {
@@ -91,14 +88,10 @@ function markAllStepsDone() {
   });
 }
 
-// HTMLエスケープしてからMarkdown風整形（XSS対策）
 function escapeHtml(s) {
   return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
 function showReport(text) {
@@ -113,7 +106,7 @@ function showReport(text) {
 }
 
 function showError(msg) {
-  errorEl.textContent = "⚠ " + msg;
+  errorEl.innerHTML = "⚠ " + escapeHtml(msg).replace(/\n/g, "<br>");
   errorEl.hidden = false;
 }
 
