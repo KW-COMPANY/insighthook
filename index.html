@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>営業先インテリジェンスAIエージェント</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🎯 営業先インテリジェンスAIエージェント</h1>
+    <p class="subtitle">営業先URLを入力するだけで、業界情報・課題・競合・営業フックを自動生成</p>
+  </header>
+
+  <main>
+    <section class="input-area">
+      <label for="targetUrl">営業先のURL</label>
+      <input
+        type="url"
+        id="targetUrl"
+        placeholder="https://example.co.jp"
+        autocomplete="off"
+      />
+      <div class="options">
+        <label>
+          <input type="radio" name="mode" value="b2b" checked /> B2B営業
+        </label>
+        <label>
+          <input type="radio" name="mode" value="b2c" /> B2C営業
+        </label>
+      </div>
+      <button id="runBtn">分析を開始</button>
+    </section>
+
+    <section class="progress" id="progress" hidden>
+      <h2>処理状況</h2>
+      <ol id="steps">
+        <li data-step="1">営業先サイトの解析</li>
+        <li data-step="2">業界キーワード推定</li>
+        <li data-step="3">外部ナレッジ検索</li>
+        <li data-step="4">業界課題・競合・動向の分析</li>
+        <li data-step="5">営業フック話題の生成</li>
+      </ol>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2>📊 分析レポート</h2>
+      <div id="reportContent"></div>
+      <button id="copyBtn">レポートをコピー</button>
+    </section>
+
+    <section class="error" id="error" hidden></section>
+  </main>
+
+  <footer>
+    <small>Powered by Cloudflare Workers + Gemini API</small>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
