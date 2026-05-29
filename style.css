@@ -171,3 +171,29 @@ footer {
   color: #718096;
   font-size: 0.85rem;
 }
+/* File: style.css （末尾に追記） */
+.notice {
+  background: #fffaf0;
+  border-left: 4px solid #d69e2e;
+  font-size: 0.9rem;
+}
+
+.notice strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #b7791f;
+}
+
+.notice ul {
+  padding-left: 1.2rem;
+}
+
+.notice li {
+  margin-bottom: 0.3rem;
+}
+
+.disclaimer {
+  font-size: 0.85rem;
+  color: #718096;
+  margin-bottom: 1rem;
+}
