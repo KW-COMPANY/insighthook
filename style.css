@@ -1,0 +1,173 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans",
+    sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8edf3 100%);
+  color: #1a2233;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+header {
+  background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
+  color: #fff;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+main {
+  max-width: 880px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.input-area label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+#targetUrl {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #cbd5e0;
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+
+#targetUrl:focus {
+  outline: none;
+  border-color: #2c5282;
+}
+
+.options {
+  margin: 1rem 0;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.options label {
+  font-weight: 400;
+  cursor: pointer;
+}
+
+button {
+  background: #2c5282;
+  color: #fff;
+  border: none;
+  padding: 0.9rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #1a365d;
+}
+
+button:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+}
+
+.progress ol {
+  list-style: none;
+  padding-left: 0;
+}
+
+.progress li {
+  padding: 0.6rem 0 0.6rem 2rem;
+  position: relative;
+  color: #718096;
+}
+
+.progress li::before {
+  content: "○";
+  position: absolute;
+  left: 0;
+  font-size: 1.2rem;
+}
+
+.progress li.done {
+  color: #2c5282;
+  font-weight: 600;
+}
+
+.progress li.done::before {
+  content: "✓";
+  color: #38a169;
+}
+
+.progress li.active {
+  color: #d69e2e;
+  font-weight: 600;
+}
+
+.progress li.active::before {
+  content: "●";
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.result h2 {
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #2c5282;
+  padding-bottom: 0.5rem;
+}
+
+#reportContent {
+  white-space: pre-wrap;
+  background: #f7fafc;
+  padding: 1.2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+#reportContent h3 {
+  color: #2c5282;
+  margin: 1rem 0 0.5rem;
+}
+
+.error {
+  background: #fff5f5;
+  border-left: 4px solid #c53030;
+  color: #c53030;
+}
+
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  color: #718096;
+  font-size: 0.85rem;
+}
