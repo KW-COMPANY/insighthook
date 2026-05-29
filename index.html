@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
   <title>営業先インテリジェンスAIエージェント</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -13,39 +14,45 @@
   </header>
 
   <main>
+    <section class="notice">
+      <strong>⚠ ご利用上の注意</strong>
+      <ul>
+        <li>入力は<strong>公開されている企業サイトのURLのみ</strong>に限定してください。</li>
+        <li>個人情報・社外秘情報・未公開資料のURLは入力しないでください。</li>
+        <li>本ツールの分析結果は<strong>一般公開情報に基づく推定</strong>であり、正確性を保証するものではありません。商談前にご自身で事実確認をお願いします。</li>
+        <li>生成されたレポートに万一個人情報が含まれていた場合は、利用前に必ず削除してください。</li>
+      </ul>
+    </section>
+
     <section class="input-area">
-      <label for="targetUrl">営業先のURL</label>
+      <label for="targetUrl">営業先のURL（公開ページのみ）</label>
       <input
         type="url"
         id="targetUrl"
         placeholder="https://example.co.jp"
         autocomplete="off"
+        spellcheck="false"
       />
-      <div class="options">
-        <label>
-          <input type="radio" name="mode" value="b2b" checked /> B2B営業
-        </label>
-        <label>
-          <input type="radio" name="mode" value="b2c" /> B2C営業
-        </label>
-      </div>
       <button id="runBtn">分析を開始</button>
     </section>
 
     <section class="progress" id="progress" hidden>
       <h2>処理状況</h2>
       <ol id="steps">
-        <li data-step="1">営業先サイトの解析</li>
+        <li data-step="1">営業先サイトの解析（個人情報マスキング込み）</li>
         <li data-step="2">業界キーワード推定</li>
         <li data-step="3">外部ナレッジ検索</li>
         <li data-step="4">業界課題・競合・動向の分析</li>
-        <li data-step="5">営業フック話題の生成</li>
+        <li data-step="5">営業フック話題の生成・最終フィルタ</li>
       </ol>
     </section>
 
     <section class="result" id="result" hidden>
       <h2>📊 分析レポート</h2>
       <div id="reportContent"></div>
+      <p class="disclaimer">
+        ※ 本レポートはAIによる自動生成です。事実確認のうえご利用ください。
+      </p>
       <button id="copyBtn">レポートをコピー</button>
     </section>
 
@@ -53,7 +60,7 @@
   </main>
 
   <footer>
-    <small>Powered by Cloudflare Workers + Gemini API</small>
+    <small>Powered by Cloudflare Workers + Gemini API ／ 入力URL以外の情報は保持しません</small>
   </footer>
 
   <script src="app.js"></script>
