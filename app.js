@@ -1,4 +1,3 @@
-// File: app.js
 const WORKER_ENDPOINT = "https://insighthook.gmo-k-watanabe.workers.dev";
 
 const runBtn = document.getElementById("runBtn");
@@ -145,7 +144,7 @@ function showReport(text) {
     sections[m[1].toUpperCase()] = m[2].trim();
   }
 
-  // SECTIONタグが見つからない場合はフォールバック（旧フォーマット対応）
+  // SECTIONタグが見つからない場合はフォールバック
   const hasSections = Object.keys(sections).length > 0;
   if (!hasSections) {
     renderFallback(text);
@@ -240,7 +239,6 @@ function renderMarkdownCard(container, text) {
   html = html.replace(/(<li>[\s\S]*?<\/li>)(?=\s*<li>|$)/gm, (m) => m);
   html = html.replace(/((?:<li>[\s\S]*?<\/li>\n?)+)/g, "<ul>$1</ul>");
 
-  // テーブル変換（|行|を検出してtableに）
   html = convertMarkdownTable(html);
 
   // 改行
@@ -276,7 +274,6 @@ function convertMarkdownTable(html) {
   });
 }
 
-/* 営業フックカード：フックブロックをカード型に */
 function renderHooksCard(container, text) {
   const hookList = document.createElement("div");
   hookList.className = "hook-list";
@@ -317,7 +314,6 @@ function renderHooksCard(container, text) {
       item.appendChild(row);
     });
 
-    // 行が何もパースできなかった場合はテキストそのまま
     if (item.children.length <= 1) {
       const fallbackText = trimmed
         .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
