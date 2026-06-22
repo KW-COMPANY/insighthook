@@ -1,3 +1,5 @@
+<!-- Output: html -->
+<!-- File: index.html -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -6,14 +8,34 @@
   <meta name="robots" content="noindex" />
   <title>InsightHook</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
 </head>
 <body>
+
+  <!-- ヘッダー -->
   <header>
-    <h1>🎯 InsightHook</h1>
-    <p class="subtitle">営業先URLを入力するだけで、業界情報・課題・競合・営業フックを自動生成</p>
+    <div class="header-bg-shapes">
+      <span class="shape shape-1"></span>
+      <span class="shape shape-2"></span>
+      <span class="shape shape-3"></span>
+    </div>
+    <div class="header-inner">
+      <div class="logo-badge">AI Agent</div>
+      <h1>🎯 InsightHook</h1>
+      <p class="subtitle">営業先URLを入力するだけで、業界情報・課題・競合・営業フックを自動生成</p>
+      <div class="header-tags">
+        <span class="tag">🔗 外部ナレッジ連携</span>
+        <span class="tag">🤖 多段AI処理</span>
+        <span class="tag">📊 業務特化レポート</span>
+      </div>
+    </div>
   </header>
 
   <main>
+
+    <!-- 注意事項 -->
     <section class="notice">
       <strong>⚠ ご利用上の注意</strong>
       <ul>
@@ -24,45 +46,88 @@
       </ul>
     </section>
 
+    <!-- 入力エリア -->
     <section class="input-area">
-      <label for="targetUrl">営業先のURL（公開ページのみ）</label>
-      <input
-        type="url"
-        id="targetUrl"
-        placeholder="https://example.co.jp"
-        autocomplete="off"
-        spellcheck="false"
-      />
-      <button id="runBtn">分析を開始</button>
+      <label for="targetUrl">🌐 営業先のURL（公開ページのみ）</label>
+      <div class="input-row">
+        <input
+          type="url"
+          id="targetUrl"
+          placeholder="https://example.co.jp"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button id="runBtn">
+          <span class="btn-icon">⚡</span>
+          <span class="btn-label">分析を開始</span>
+        </button>
+      </div>
     </section>
 
+    <!-- 進捗 -->
     <section class="progress" id="progress" hidden>
-  <h2>処理状況</h2>
-  <ol id="steps">
-    <li data-step="1">営業先サイトの構造化解析（複数ページ取得）</li>
-    <li data-step="2">企業プロファイル抽出</li>
-    <li data-step="3">業界キーワード推定</li>
-    <li data-step="4">最新ニュース・外部ナレッジ検索</li>
-    <li data-step="5">業界分析の深掘り生成</li>
-    <li data-step="6">自己レビューによる品質強化</li>
-    <li data-step="7">営業フックの生成</li>
-  </ol>
-</section>
+      <div class="progress-header">
+        <h2>🤖 AIエージェント処理ログ</h2>
+        <p class="progress-desc">7つのステップを自律的に実行しています</p>
+      </div>
+      <ol id="steps">
+        <li data-step="1">
+          <span class="step-label">Step 1</span>
+          <span class="step-text">営業先サイトの構造化解析（複数ページ取得）</span>
+        </li>
+        <li data-step="2">
+          <span class="step-label">Step 2</span>
+          <span class="step-text">企業プロファイル抽出</span>
+        </li>
+        <li data-step="3">
+          <span class="step-label">Step 3</span>
+          <span class="step-text">業界キーワード推定</span>
+        </li>
+        <li data-step="4">
+          <span class="step-label">Step 4</span>
+          <span class="step-text">最新ニュース・外部ナレッジ検索</span>
+        </li>
+        <li data-step="5">
+          <span class="step-label">Step 5</span>
+          <span class="step-text">業界分析の深掘り生成</span>
+        </li>
+        <li data-step="6">
+          <span class="step-label">Step 6</span>
+          <span class="step-text">自己レビューによる品質強化</span>
+        </li>
+        <li data-step="7">
+          <span class="step-label">Step 7</span>
+          <span class="step-text">営業フックの生成</span>
+        </li>
+      </ol>
+    </section>
 
+    <!-- 結果エリア -->
     <section class="result" id="result" hidden>
-      <h2>📊 分析レポート</h2>
+      <div class="result-header">
+        <h2>📊 分析レポート</h2>
+        <div class="result-actions">
+          <button id="copyBtn" class="btn-secondary">
+            <span>📋</span> レポートをコピー
+          </button>
+        </div>
+      </div>
       <div id="reportContent"></div>
       <p class="disclaimer">
         ※ 本レポートはAIによる自動生成です。事実確認のうえご利用ください。
       </p>
-      <button id="copyBtn">レポートをコピー</button>
     </section>
 
+    <!-- エラー -->
     <section class="error" id="error" hidden></section>
+
   </main>
 
   <footer>
-    <small>※入力URL以外の情報は保持しません</small>
+    <div class="footer-inner">
+      <p class="footer-badge">🤖 Powered by Gemini × Cloudflare Workers AI</p>
+      <small>※入力URL以外の情報は保持しません</small>
+    </div>
   </footer>
 
   <script src="app.js"></script>
