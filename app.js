@@ -1,4 +1,3 @@
-// File: app.js
 const WORKER_ENDPOINT = "https://insighthook.gmo-k-watanabe.workers.dev";
 
 const runBtn     = document.getElementById("runBtn");
