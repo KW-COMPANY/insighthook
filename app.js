@@ -1,4 +1,3 @@
-// File: app.js
 const WORKER_ENDPOINT = "https://insighthook.gmo-k-watanabe.workers.dev";
 const HISTORY_KEY = "insighthook_history_v1";
 const HISTORY_MAX = 10;
