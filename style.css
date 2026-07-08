@@ -1,4 +1,4 @@
-/* ===== CSS変数（カラーパレット） ===== */
+/* File: style.css */
 :root {
   --primary: #6c63ff;
   --primary-dark: #4b44cc;
@@ -243,6 +243,29 @@ section:hover {
   box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
 }
 
+#targetUrl.input-valid {
+  border-color: rgba(0, 184, 148, 0.6);
+}
+
+#targetUrl.input-invalid {
+  border-color: rgba(214, 48, 49, 0.6);
+}
+
+.input-hint {
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  min-height: 1.1em;
+  color: var(--text-muted);
+}
+
+.input-hint.hint-ok {
+  color: var(--success);
+}
+
+.input-hint.hint-error {
+  color: #ff7675;
+}
+
 /* ===== ボタン ===== */
 button {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -289,6 +312,64 @@ button:disabled {
   background: rgba(255, 255, 255, 0.14);
   box-shadow: none;
   transform: translateY(-1px);
+}
+
+.btn-small {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.78rem;
+}
+
+/* ===== 履歴エリア ===== */
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.history-header h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 1rem;
+  flex-wrap: wrap;
+}
+
+.history-item-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.history-item-url {
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-item-date {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
 }
 
 /* ===== 進捗 ===== */
@@ -406,15 +487,34 @@ button:disabled {
   gap: 0.75rem;
 }
 
+.result-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .result-header h2 {
   font-size: 1.15rem;
   font-weight: 700;
   color: #e2e8f0;
 }
 
+.cache-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: rgba(108, 99, 255, 0.15);
+  border: 1px solid rgba(108, 99, 255, 0.35);
+  color: var(--primary-light);
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
 .result-actions {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 /* ===== レポートカード ===== */
@@ -672,4 +772,32 @@ footer {
   .header-tags { gap: 0.35rem; }
   .tag { font-size: 0.72rem; }
   section { padding: 1.3rem; border-radius: var(--radius-md); }
+  .history-item { flex-direction: column; align-items: flex-start; }
+}
+
+/* ===== 印刷用スタイル ===== */
+@media print {
+  body {
+    background: #fff;
+    color: #111;
+  }
+  header, .notice, .input-area, .history-section, .progress,
+  .result-actions, footer, .error {
+    display: none !important;
+  }
+  section {
+    background: #fff;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+  .report-card {
+    background: #fff;
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+  .report-card p, .report-card li, .profile-item .value,
+  .hook-item .hook-row {
+    color: #222;
+  }
 }
