@@ -1,3 +1,4 @@
+// File: app.js
 const WORKER_ENDPOINT = "https://insighthook.gmo-k-watanabe.workers.dev";
 const HISTORY_KEY = "insighthook_history_v1";
 const HISTORY_MAX = 10;
@@ -15,6 +16,11 @@ const cacheBadgeEl = document.getElementById("cacheBadge");
 const historySection = document.getElementById("historySection");
 const historyList = document.getElementById("historyList");
 const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+
+// ★Closed Loop: 現在表示中レポートのメタ情報
+let currentReportMeta = { reportId: null, industry: null };
+// フィードバック二重送信防止（このセッション内で押したボタンを記録）
+const submittedFeedback = new Set();
 
 const BLOCKED_URL_PATTERNS = [
   /\/admin/i, /\/login/i, /\/mypage/i, /\/members?\//i,
@@ -83,9 +89,12 @@ runBtn.addEventListener("click", async () => {
     }
 
     markAllStepsDone();
+    // ★Closed Loop: メタ情報を保持
+    currentReportMeta = { reportId: data.reportId || null, industry: data.industry || null };
     showCacheBadge(data.cached, data.cachedAt);
     showReport(data.report);
-    saveHistory(url, data.report, data.cached, data.cachedAt);
+    fetchAndShowInsights(currentReportMeta.industry);
+    saveHistory(url, data.report, data.cached, data.cachedAt, currentReportMeta);
     renderHistory();
   } catch (err) {
     showError(err.message || "予期しないエラーが発生しました。");
@@ -100,6 +109,8 @@ function resetUI() {
   errorEl.hidden   = true;
   reportContent.innerHTML = "";
   cacheBadgeEl.hidden = true;
+  const oldInsight = document.getElementById("insightBadge");
+  if (oldInsight) oldInsight.hidden = true;
   document.querySelectorAll("#steps li").forEach((li) => {
     li.classList.remove("done", "active");
   });
@@ -140,6 +151,78 @@ function showCacheBadge(cached, cachedAt) {
 }
 
 /* ================================================================
+   ★Closed Loop: 蓄積インサイト表示（この業界で役立った率）
+================================================================ */
+async function fetchAndShowInsights(industry) {
+  const badge = document.getElementById("insightBadge");
+  if (!badge || !industry) {
+    if (badge) badge.hidden = true;
+    return;
+  }
+  try {
+    const res = await fetch(
+      `${WORKER_ENDPOINT}/insights?industry=${encodeURIComponent(industry)}`
+    );
+    if (!res.ok) { badge.hidden = true; return; }
+    const data = await res.json();
+    if (!data || !data.total || data.total < 1 || data.helpfulRate === null) {
+      badge.hidden = true;
+      return;
+    }
+    badge.textContent = `📈 「${industry}」業界で役立った率 ${data.helpfulRate}%（${data.total}件の評価）`;
+    badge.hidden = false;
+  } catch {
+    badge.hidden = true;
+  }
+}
+
+/* ================================================================
+   ★Closed Loop: フィードバック送信（Measure/Evaluate）
+================================================================ */
+async function sendFeedback(rating, hookTitle, btnEl, groupEl) {
+  const industry = currentReportMeta.industry || "一般";
+  const dedupeKey = `${currentReportMeta.reportId}|${hookTitle}`;
+  if (submittedFeedback.has(dedupeKey)) return;
+
+  // 二重送信防止：同じフックの両ボタンを無効化
+  submittedFeedback.add(dedupeKey);
+  if (groupEl) {
+    groupEl.querySelectorAll("button").forEach((b) => (b.disabled = true));
+  }
+
+  try {
+    const res = await fetch(`${WORKER_ENDPOINT}/feedback`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ industry, hookTitle, rating }),
+    });
+    if (res.ok) {
+      btnEl.classList.add("fb-selected");
+      const thanks = groupEl.querySelector(".fb-thanks");
+      if (thanks) {
+        thanks.textContent = rating === "up" ? "✓ 学習に反映しました" : "✓ 改善に活かします";
+        thanks.hidden = false;
+      }
+      // インサイトバッジを最新化
+      fetchAndShowInsights(industry);
+    } else {
+      throw new Error("送信失敗");
+    }
+  } catch {
+    // 失敗時は再送信できるよう解除
+    submittedFeedback.delete(dedupeKey);
+    if (groupEl) {
+      groupEl.querySelectorAll("button").forEach((b) => (b.disabled = false));
+    }
+    const thanks = groupEl.querySelector(".fb-thanks");
+    if (thanks) {
+      thanks.textContent = "送信に失敗しました。もう一度お試しください。";
+      thanks.hidden = false;
+    }
+  }
+}
+
+/* ================================================================
    分析履歴（localStorage）
 ================================================================ */
 function loadHistoryList() {
@@ -151,11 +234,19 @@ function loadHistoryList() {
   }
 }
 
-function saveHistory(url, report, cached, cachedAt) {
+function saveHistory(url, report, cached, cachedAt, meta) {
   try {
     let list = loadHistoryList();
     list = list.filter((h) => h.url !== url);
-    list.unshift({ url, report, cached: !!cached, cachedAt: cachedAt || Date.now(), savedAt: Date.now() });
+    list.unshift({
+      url,
+      report,
+      cached: !!cached,
+      cachedAt: cachedAt || Date.now(),
+      savedAt: Date.now(),
+      industry: (meta && meta.industry) || null,
+      reportId: (meta && meta.reportId) || null,
+    });
     if (list.length > HISTORY_MAX) list = list.slice(0, HISTORY_MAX);
     localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
   } catch (e) {
@@ -196,8 +287,11 @@ function renderHistory() {
     btn.addEventListener("click", () => {
       targetUrlInput.value = item.url;
       resetUI();
+      // ★履歴から復元してもフィードバックできるようメタを復元
+      currentReportMeta = { reportId: item.reportId || null, industry: item.industry || null };
       showCacheBadge(true, item.savedAt);
       showReport(item.report);
+      fetchAndShowInsights(currentReportMeta.industry);
       resultEl.hidden = false;
       resultEl.scrollIntoView({ behavior: "smooth" });
     });
@@ -384,7 +478,7 @@ function renderMarkdownCard(container, text) {
 }
 
 /* ================================================================
-   営業フックカード
+   営業フックカード（★各フックにフィードバックボタンを追加）
 ================================================================ */
 function renderHooksCard(container, text) {
   const hooks = parseHooks(text);
@@ -402,9 +496,11 @@ function renderHooksCard(container, text) {
     const item = document.createElement("div");
     item.className = "hook-item";
 
+    const hookTitle = hook.title || `フック${idx + 1}`;
+
     const titleEl = document.createElement("div");
     titleEl.className = "hook-title";
-    titleEl.textContent = `🎣 ${hook.title || `フック${idx + 1}`}`;
+    titleEl.textContent = `🎣 ${hookTitle}`;
     item.appendChild(titleEl);
 
     const rowDefs = [
@@ -437,10 +533,46 @@ function renderHooksCard(container, text) {
       item.appendChild(raw);
     }
 
+    // ★Closed Loop: フィードバックボタン群
+    item.appendChild(buildFeedbackGroup(hookTitle));
+
     hookList.appendChild(item);
   });
 
   container.appendChild(hookList);
+}
+
+/* ---------- ★フィードバックボタン群の生成 ---------- */
+function buildFeedbackGroup(hookTitle) {
+  const group = document.createElement("div");
+  group.className = "fb-group";
+
+  const label = document.createElement("span");
+  label.className = "fb-label";
+  label.textContent = "このフックは商談で使えそう？";
+  group.appendChild(label);
+
+  const upBtn = document.createElement("button");
+  upBtn.type = "button";
+  upBtn.className = "fb-btn fb-up";
+  upBtn.textContent = "👍 役立った";
+  upBtn.addEventListener("click", () => sendFeedback("up", hookTitle, upBtn, group));
+
+  const downBtn = document.createElement("button");
+  downBtn.type = "button";
+  downBtn.className = "fb-btn fb-down";
+  downBtn.textContent = "👎 イマイチ";
+  downBtn.addEventListener("click", () => sendFeedback("down", hookTitle, downBtn, group));
+
+  group.appendChild(upBtn);
+  group.appendChild(downBtn);
+
+  const thanks = document.createElement("span");
+  thanks.className = "fb-thanks";
+  thanks.hidden = true;
+  group.appendChild(thanks);
+
+  return group;
 }
 
 /* ================================================================
