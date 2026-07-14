@@ -1,4 +1,3 @@
-// File: app.js
 const WORKER_ENDPOINT = "https://insighthook.gmo-k-watanabe.workers.dev";
 const HISTORY_KEY = "insighthook_history_v1";
 const HISTORY_MAX = 10;
@@ -17,7 +16,6 @@ const historySection = document.getElementById("historySection");
 const historyList = document.getElementById("historyList");
 const clearHistoryBtn = document.getElementById("clearHistoryBtn");
 
-// ★Closed Loop: 現在表示中レポートのメタ情報
 let currentReportMeta = { reportId: null, industry: null };
 // フィードバック二重送信防止（このセッション内で押したボタンを記録）
 const submittedFeedback = new Set();
@@ -89,7 +87,6 @@ runBtn.addEventListener("click", async () => {
     }
 
     markAllStepsDone();
-    // ★Closed Loop: メタ情報を保持
     currentReportMeta = { reportId: data.reportId || null, industry: data.industry || null };
     showCacheBadge(data.cached, data.cachedAt);
     showReport(data.report);
@@ -151,7 +148,7 @@ function showCacheBadge(cached, cachedAt) {
 }
 
 /* ================================================================
-   ★Closed Loop: 蓄積インサイト表示（この業界で役立った率）
+   蓄積インサイト表示（この業界で役立った率）
 ================================================================ */
 async function fetchAndShowInsights(industry) {
   const badge = document.getElementById("insightBadge");
@@ -177,7 +174,7 @@ async function fetchAndShowInsights(industry) {
 }
 
 /* ================================================================
-   ★Closed Loop: フィードバック送信（Measure/Evaluate）
+   フィードバック送信（Measure/Evaluate）
 ================================================================ */
 async function sendFeedback(rating, hookTitle, btnEl, groupEl) {
   const industry = currentReportMeta.industry || "一般";
@@ -287,7 +284,6 @@ function renderHistory() {
     btn.addEventListener("click", () => {
       targetUrlInput.value = item.url;
       resetUI();
-      // ★履歴から復元してもフィードバックできるようメタを復元
       currentReportMeta = { reportId: item.reportId || null, industry: item.industry || null };
       showCacheBadge(true, item.savedAt);
       showReport(item.report);
@@ -478,7 +474,7 @@ function renderMarkdownCard(container, text) {
 }
 
 /* ================================================================
-   営業フックカード（★各フックにフィードバックボタンを追加）
+   営業フックカード
 ================================================================ */
 function renderHooksCard(container, text) {
   const hooks = parseHooks(text);
@@ -533,7 +529,6 @@ function renderHooksCard(container, text) {
       item.appendChild(raw);
     }
 
-    // ★Closed Loop: フィードバックボタン群
     item.appendChild(buildFeedbackGroup(hookTitle));
 
     hookList.appendChild(item);
@@ -542,7 +537,6 @@ function renderHooksCard(container, text) {
   container.appendChild(hookList);
 }
 
-/* ---------- ★フィードバックボタン群の生成 ---------- */
 function buildFeedbackGroup(hookTitle) {
   const group = document.createElement("div");
   group.className = "fb-group";
