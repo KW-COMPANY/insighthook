@@ -1,3 +1,4 @@
+/* File: style.css */
 :root {
   --primary: #6c63ff;
   --primary-dark: #4b44cc;
@@ -721,6 +722,72 @@ button:disabled {
   flex-shrink: 0;
 }
 
+/* ===== フィードバックボタン群（Closed Loop） ===== */
+.fb-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.85rem;
+  padding-top: 0.7rem;
+  border-top: 1px dashed rgba(253, 150, 68, 0.25);
+}
+
+.fb-label {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  margin-right: 0.15rem;
+}
+
+.fb-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  color: #cbd5e0;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s, opacity 0.2s;
+}
+
+.fb-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: none;
+}
+
+.fb-btn.fb-up:hover:not(:disabled) {
+  background: rgba(0, 184, 148, 0.18);
+  border-color: rgba(0, 184, 148, 0.5);
+  color: #a8edcb;
+}
+
+.fb-btn.fb-down:hover:not(:disabled) {
+  background: rgba(214, 48, 49, 0.15);
+  border-color: rgba(214, 48, 49, 0.45);
+  color: #ff7675;
+}
+
+.fb-btn.fb-selected {
+  background: rgba(108, 99, 255, 0.25);
+  border-color: rgba(108, 99, 255, 0.55);
+  color: var(--primary-light);
+}
+
+.fb-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+  transform: none;
+}
+
+.fb-thanks {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--success);
+  margin-left: 0.2rem;
+}
+
 /* ===== エラー ===== */
 .error {
   background: rgba(214, 48, 49, 0.1);
@@ -772,6 +839,7 @@ footer {
   .tag { font-size: 0.72rem; }
   section { padding: 1.3rem; border-radius: var(--radius-md); }
   .history-item { flex-direction: column; align-items: flex-start; }
+  .fb-group { gap: 0.4rem; }
 }
 
 /* ===== 印刷用スタイル ===== */
@@ -781,7 +849,7 @@ footer {
     color: #111;
   }
   header, .notice, .input-area, .history-section, .progress,
-  .result-actions, footer, .error {
+  .result-actions, footer, .error, .fb-group {
     display: none !important;
   }
   section {
